@@ -1,0 +1,257 @@
+{
+  "name": "My workflow 6",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0199533d-ad3c-4649-be7e-344c07c2cc1f",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -496,
+        -64
+      ],
+      "id": "d3ce737c-47c1-4c4b-8cae-57f6f032fd3e",
+      "name": "Webhook",
+      "webhookId": "0199533d-ad3c-4649-be7e-344c07c2cc1f"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appZ9fwkIhsbctQZB",
+          "mode": "list",
+          "cachedResultName": "n8n base'",
+          "cachedResultUrl": "https://airtable.com/appZ9fwkIhsbctQZB"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblWEWI2V6P5ogFRp",
+          "mode": "list",
+          "cachedResultName": "Health & Wellness Profiles",
+          "cachedResultUrl": "https://airtable.com/appZ9fwkIhsbctQZB/tblWEWI2V6P5ogFRp"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.body.niche }}",
+            "Follower Range": "={{ $json.body.follower_range }}",
+            "Monetizing": "={{ $json.body.monetizing }}",
+            "Income Goal (6 Months)": "={{ $json.body.income_goal_6_months }}",
+            "Email": "={{ $json.body.email }}",
+            "Platforms": "={{ $json.body.platforms[0] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Platforms",
+              "displayName": "Platforms",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Follower Range",
+              "displayName": "Follower Range",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Monetizing",
+              "displayName": "Monetizing",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Income Goal (6 Months)",
+              "displayName": "Income Goal (6 Months)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -288,
+        -64
+      ],
+      "id": "6cd5dddb-bdbd-48fe-b9e5-24cda4784be5",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "I4M16J8qc4uSn2tk",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Using the data below, create a personalized weekly marketing plan.\n\nNiche: {{ $('Webhook').item.json.body.niche }}\nPlatforms: {{ $('Webhook').item.json.body.platforms }}\nFollower Range: {{ $('Webhook').item.json.body.follower_range }}\nMonetizing: {{ $('Webhook').item.json.body.monetizing }}\nIncome Goal: {{ $('Webhook').item.json.body.income_goal_6_months }}\n\nFormatting rules:\n- DO NOT use <html>, <head>, or <body> tags\n- Use only simple HTML supported by Gmail\n- Use <h2>, <h3>, <ul>, <li>, <strong>\n- Output must look clean in Gmail\n- Point-wise content with clear headings\n\nGenerate the plan now.\n",
+        "options": {
+          "systemMessage": "You are a Marketing Strategist.\nAlways generate actionable marketing plans.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        -64
+      ],
+      "id": "e9d736e2-8a09-4598-9fee-474d71ae972e",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        176
+      ],
+      "id": "b7236884-0cdc-4759-a64c-b0a67147ecea",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "MDE36UPvTzKVEv2i",
+          "name": "Google Gemini(PaLM) Api account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.email }}",
+        "subject": "hello, here is your custome build plane ready for week",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        272,
+        -64
+      ],
+      "id": "314efa7a-4161-4b39-b4e9-1f2be24afcda",
+      "name": "Send a message",
+      "webhookId": "d74eaa85-55c7-4489-9520-b0d783133fe1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "gcev1KGxyAe9PSw2",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4705872f-84e4-4760-8eec-a319e53f4b43",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e1e4352e738f169e3c7804a7610508f30d8bc081c90d5da045b7b970a3da7a3c"
+  },
+  "id": "pT6WAUAP1Z4xlfiY",
+  "tags": []
+}
